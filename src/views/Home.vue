@@ -9,7 +9,7 @@
       Address:
       <input type="text" v-model="newPlaceParams.address" />
     </div>
-    <button v-on:click="createPlace()">Create New Place</button>
+    <button v-on:click="createPlaces()">Create New Place</button>
     <div v-for="place in places" v-bind:key="place.id">
       <h2>Place: {{ place.name }}</h2>
       <button v-on:click="showPlace(place)">Show More Information</button>
@@ -26,7 +26,7 @@
           <input type="text" v-model="currentPlace.address" />
         </p>
         <button v-on:click="updatePlace(currentPlace)">Update Place</button>
-        <button v-on:click="destroyProduct(currentPlace)">Delete Place</button>
+        <button v-on:click="destroyPlace(currentPlace)">Delete Place</button>
         <button>Close</button>
       </form>
     </dialog>
@@ -48,16 +48,19 @@ export default {
   },
   methods: {
     indexPlaces: function () {
-      axios.post("http://localhost:3000/places").then((response) => {
+      axios.get("http://localhost:3000/places").then((response) => {
         console.log(response.data);
         this.places = response.data;
       });
     },
     createPlaces: function () {
-      axios.post("http://localhost:3000/places").then((response) => {
-        console.log(response.data);
-        this.places.push = response.data;
-      });
+      axios
+        .post("http://localhost:3000/places", this.newPlaceParams)
+        .then((response) => {
+          console.log(response.data);
+          this.places.push(response.data);
+        })
+        .catch((err) => console.log(err.response.data.errors));
     },
     showPlace: function (place) {
       console.log(place);
